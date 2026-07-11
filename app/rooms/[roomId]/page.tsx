@@ -44,7 +44,7 @@ import {
   LogOut,
 } from 'lucide-react';
 
-import { Menu, Users, Copy, Check, ChevronLeft, PanelRightOpen, PanelRightClose } from 'lucide-react';
+
 import { toast } from 'sonner';
 import type { Message, Room, Role } from '@/lib/types';
 
