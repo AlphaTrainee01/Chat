@@ -24,6 +24,26 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import {
+  Menu,
+  Users,
+  Copy,
+  Check,
+  ChevronLeft,
+  PanelRightOpen,
+  PanelRightClose,
+  MoreVertical,
+  Trash2,
+  LogOut,
+} from 'lucide-react';
+
 import { Menu, Users, Copy, Check, ChevronLeft, PanelRightOpen, PanelRightClose } from 'lucide-react';
 import { toast } from 'sonner';
 import type { Message, Room, Role } from '@/lib/types';
@@ -227,13 +247,88 @@ function RoomContent() {
                 <h2 className="truncate font-semibold">{room?.name}</h2>
                 <p className="truncate text-xs text-muted-foreground">{members.length} members</p>
               </div>
-              <button onClick={copyCode} className="hidden sm:flex items-center gap-1.5 rounded-lg border border-border px-2.5 py-1 text-xs font-mono hover:bg-muted transition-colors">
-                {room?.code}
-                {copied ? <Check className="h-3.5 w-3.5 text-success" /> : <Copy className="h-3.5 w-3.5" />}
-              </button>
-              <Button variant="ghost" size="icon" className="h-9 w-9" onClick={() => setSidebarOpen((s) => !s)}>
-                {sidebarOpen ? <PanelRightClose className="h-5 w-5" /> : <PanelRightOpen className="h-5 w-5" />}
-              </Button>
+             <button
+  onClick={copyCode}
+  className="hidden sm:flex items-center gap-1.5 rounded-lg border border-border px-2.5 py-1 text-xs font-mono hover:bg-muted transition-colors"
+>
+  {room?.code}
+  {copied ? (
+    <Check className="h-3.5 w-3.5 text-success" />
+  ) : (
+    <Copy className="h-3.5 w-3.5" />
+  )}
+</button>
+
+<AlertDialog>
+  <DropdownMenu>
+    <DropdownMenuTrigger asChild>
+      <Button variant="ghost" size="icon" className="h-9 w-9">
+        <MoreVertical className="h-5 w-5" />
+      </Button>
+    </DropdownMenuTrigger>
+
+    <DropdownMenuContent align="end">
+      <DropdownMenuItem
+        onClick={leaveRoom}
+        className="text-destructive focus:text-destructive"
+      >
+        <LogOut className="mr-2 h-4 w-4" />
+        Leave room
+      </DropdownMenuItem>
+
+      {room?.my_role === 'owner' && (
+        <>
+          <DropdownMenuSeparator />
+
+          <AlertDialogTrigger asChild>
+            <DropdownMenuItem
+              className="text-destructive focus:text-destructive"
+              onSelect={(e) => e.preventDefault()}
+            >
+              <Trash2 className="mr-2 h-4 w-4" />
+              Delete room
+            </DropdownMenuItem>
+          </AlertDialogTrigger>
+        </>
+      )}
+    </DropdownMenuContent>
+  </DropdownMenu>
+
+  <AlertDialogContent>
+    <AlertDialogHeader>
+      <AlertDialogTitle>Delete this room?</AlertDialogTitle>
+
+      <AlertDialogDescription>
+        This permanently deletes "{room?.name}" and all its messages.
+        This cannot be undone.
+      </AlertDialogDescription>
+    </AlertDialogHeader>
+
+    <AlertDialogFooter>
+      <AlertDialogCancel>Cancel</AlertDialogCancel>
+
+      <AlertDialogAction
+        onClick={deleteRoom}
+        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+      >
+        Delete room
+      </AlertDialogAction>
+    </AlertDialogFooter>
+  </AlertDialogContent>
+</AlertDialog>
+
+<Button
+  variant="ghost"
+  size="icon"
+  className="h-9 w-9"
+  onClick={() => setSidebarOpen((s) => !s)}
+>
+  {sidebarOpen ? (
+    <PanelRightClose className="h-5 w-5" />
+  ) : (
+    <PanelRightOpen className="h-5 w-5" />
+  )}
+</Button>
             </div>
 
             {/* Messages */}
